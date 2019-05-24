@@ -1,0 +1,15 @@
+[package]
+name = "yeet"
+version = "0.0.0"
+authors = ["Jeron Aldaron Lau <jeronaldaron@gmail.com>"]
+edition = "2018"
+
+license = "MIT / BSL-1.0"
+description = "The Yeet Programming Language Compiler."
+homepage = "https://yeet-lang.github.io/"
+repository = "https://github.com/yeet-lang/yeet"
+readme = "README.md"
+keywords = ["yeet", "compiler", "interpreter"]
+categories = ["command-line-utilities", "development-tools::build-utils", "graphics"]
+
+[dependencies]
