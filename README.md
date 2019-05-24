@@ -1,0 +1,2 @@
+# foog
+The foog compiler.
