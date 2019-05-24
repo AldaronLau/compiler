@@ -12,4 +12,8 @@ readme = "README.md"
 keywords = ["yeet", "compiler", "interpreter"]
 categories = ["command-line-utilities", "development-tools::build-utils", "graphics"]
 
+[[bin]]
+name = "yeet"
+path = "src/yeet/main.rs"
+
 [dependencies]
