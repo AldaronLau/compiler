@@ -1,0 +1,24 @@
+[package]
+name = "compiler"
+version = "0.1.0"
+authors = ["Jeron Aldaron Lau <jeronaldaron@gmail.com>"]
+edition = "2018"
+
+license = "MIT OR BSL-1.0"
+description = "Compiler."
+readme = "README.md"
+keywords = ["compiler", "interpreter"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+name = "compiler"
+path = "src/compiler/main.rs"
+
+[dependencies]
+
+[features]
+default = ["rust", "python", "c", "aratar"]
+rust = []
+python = []
+c = []
+aratar = []
