@@ -1,2 +1,2 @@
-# foog
-The foog compiler.
+# Yeet
+The Yeet compiler.
