@@ -61,6 +61,15 @@ let my_function: fn
     out(next: par_a + 1)
 }
 
+fn my_function    # `my_function` docs.
+    let a: u32?   # `a` parameter docs - this is an optional parameter (type).
+    let b?: @text # `b` parameter docs - this is optional name, still required.
+    out next: u32 # `next` output docs - this is like a return value.
+{
+    "Hello, world " par_a.hex "! " b
+    out(next: par_a + 1)
+}
+
 my_function(a: 0, "YEET!")
 my_function a: 0, "YEET!"
 ```
