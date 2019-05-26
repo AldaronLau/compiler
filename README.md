@@ -1,2 +1,2 @@
 # Yeet
-The Yeet compiler.
+The Yeet compiler.  One programming language to yeet them all!
