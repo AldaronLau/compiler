@@ -21,9 +21,9 @@ code {
     # Label where the program starts (store a0 & a1 on the stack, so we can use)
     @home r0, r1 {
         # Log info text
-        assign r1, text.length
-        assign r2, text.address
-        syscall 2, r1, r2
+        set r1, text.length
+        set r2, text.address
+        log_info r1, r2
     }
 }
 ```
@@ -134,6 +134,8 @@ sign_extend_or_retract_float(param=1111)
 operator_float(opcode=5)
 ========================
 arithmetic_shift(param=0000)
+float_from_int(param=1000)
+round_down(param=1100)
 ------------------
 div(param=b0001)
 mod(param=b0010)
@@ -142,12 +144,9 @@ add(param=0100)
 sub(param=0101)
 mul(param=0110)
 mulneg(param=0111)
-
-round_down(param=1000)
 round(param=b1001)
 floor(param=b1010)
 ceiling(param=b1011)
-round_down_to_signed_int(param=1100)
 round_to_signed_int(param=1101)
 floor_to_signed_int(param=1110)
 ceiling_to_signed_int(param=1111)

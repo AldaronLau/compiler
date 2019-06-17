@@ -147,6 +147,19 @@ one                  # Boolean XOR.  $ paramaters.
 
 # List of Standard Types
 ```
+# Raw data
+byte # 8 bits
+half # Half-Word 16 bits
+word # 32-bits
+long # Double (Long) Word 64-bits
+quad # Quadword 128-bits
+# Unsigned Integers
+ubyte, uhalf, uword, ulong, uquad
+# Signed Integers
+ibyte, ihalf, iword, ilong, iquad
+# Floats
+single, double
+
 u8                   # Short for u8.0 (fixed point)
 u16
 u32
@@ -160,6 +173,6 @@ s128
 f32
 f64
 (u8, u8, u8)         # A tuple of 3 `u8`s
-{u8; 100}            # A 100-element vector of `u8`s
-[u8; 100]            # A 100-element list of `u8`s
+{u8; 100}            # A 100-element vector (static size array) of `u8`s
+[u8; 100]            # A 100-element list (dynamic size array) of `u8`s
 ```
