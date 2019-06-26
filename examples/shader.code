@@ -2,7 +2,7 @@
 
 # This example shows a making a simple bitmap shader for barg.
 
-fn shader               # shader function (runs once for every vertex)
+func shader               # shader function (runs once for every vertex)
     let vertex: vec3    # position coordinate
     let zoom: vec2      # bitmap zoom coordinate
     let view: view      # view matrix
