@@ -8,7 +8,7 @@ pub enum Op {
     /// Function call.
     Call{name:String, var_a:String, operator:String, var_b: String},
     /// Collect output from a function.
-    Out{name:String, from:String},
+    Out{name:String, def:String, from:String},
     /// 
     Function{name:String},
     /// 
@@ -136,9 +136,8 @@ impl Code {
                         c += 1;
                     };
                     if could_b {
-                        let var_a = unsafe { std::str::from_utf8_unchecked(&line[start..c]) }.to_string();
+                        let var_a = unsafe { std::str::from_utf8_unchecked(&line[start..c-1]) }.to_string();
 
-                        c += 1;
                         let start = c;
 
                         // Read operand b.
@@ -164,12 +163,12 @@ impl Code {
                             std::process::exit(1);
                         }
 
-                        let var_b = unsafe { std::str::from_utf8_unchecked(&line[start..c]) }.to_string();
+                        let var_b = unsafe { std::str::from_utf8_unchecked(&line[start..c-1]) }.to_string();
 
                         self.ops.push(Op::Call { name: "".to_string(), var_a, operator: "".to_string(), var_b });
-                        self.ops.push(Op::Out { name, from: "".to_string() });
+                        self.ops.push(Op::Out { name, def: "".to_string(), from: "".to_string() });
                     } else {
-                        self.ops.push(Op::Out { name, from: unsafe { std::str::from_utf8_unchecked(&line[start..c]) }.to_string() });
+                        self.ops.push(Op::Out { name, def: "".to_string(), from: unsafe { std::str::from_utf8_unchecked(&line[start..c-1]) }.to_string() });
                     }
                     self.nothing_else_allowed(c, line)          
                 }
