@@ -2,11 +2,13 @@
 #[derive(Debug)]
 pub enum Op {
     /// Collect input for a function.
-    InLet{name:String,def:String},
+    InLet{name:String, def:String},
     /// Collect input for a function.
-    InVar{name:String,def:String},
+    InVar{name:String, def:String},
+    /// Function call.
+    Call{name:String, var_a:String, operator:String, var_b: String},
     /// Collect output from a function.
-    Out{},
+    Out{name:String, from:String},
     /// 
     Function{name:String},
     /// 
@@ -113,7 +115,69 @@ impl Code {
                 }
             }            
         } else {
-            c
+            match keyword {
+                Keyword::Out => {
+                    let start = c;
+                    // Read operand a.
+                    let could_b = 'a: loop {
+                        match line[c] {
+                            b'\0' | b'\n' | b';' => {
+                                break false;
+                            }
+                            b'.' => {
+                                panic!("Function operators not supported yet!");
+                            }
+                            b' ' => {
+                                c += 1;
+                                break line[c] != b' ';
+                            }
+                            a => {}
+                        }
+                        c += 1;
+                    };
+                    if could_b {
+                        let var_a = unsafe { std::str::from_utf8_unchecked(&line[start..c]) }.to_string();
+
+                        c += 1;
+                        let start = c;
+
+                        // Read operand b.
+                        let could_c = 'a: loop {
+                            match line[c] {
+                                b'\0' | b'\n' | b';' => {
+                                    break false;
+                                }
+                                b'.' => {
+                                    panic!("Function operators not supported yet!");
+                                }
+                                b' ' => {
+                                    c += 1;
+                                    break line[c] != b' ';
+                                }
+                                a => {}
+                            }
+                            c += 1;
+                        };
+
+                        if could_c {
+                            eprintln!("Error: Too many operands!");
+                            std::process::exit(1);
+                        }
+
+                        let var_b = unsafe { std::str::from_utf8_unchecked(&line[start..c]) }.to_string();
+
+                        self.ops.push(Op::Call { name: "".to_string(), var_a, operator: "".to_string(), var_b });
+                        self.ops.push(Op::Out { name, from: "".to_string() });
+                    } else {
+                        self.ops.push(Op::Out { name, from: unsafe { std::str::from_utf8_unchecked(&line[start..c]) }.to_string() });
+                    }
+                    self.nothing_else_allowed(c, line)          
+                }
+                _ => {
+                    eprintln!("No `$` is not implemented for this keyword yet");
+                    std::process::exit(1);
+                }
+            }
         }
     }
 
@@ -123,7 +187,6 @@ impl Code {
         let mut found = false;
 
         'a: loop {
-            println!("{}", line[c] as char);
             match line[c] {
                 b'\0' => {
                     eprintln!("Unexpected end of line!");
@@ -193,7 +256,7 @@ impl Code {
                 }
                 b':' => {
                     let name = unsafe { std::str::from_utf8_unchecked(&line[..c]) }.to_string();
-                    return self.assignment(c + 1, line, Keyword::Let, name);
+                    return self.assignment(c + 1, line, self.open, name);
                 }
                 _ => {}
             }
@@ -245,28 +308,40 @@ impl Code {
                                 start = c + 1;
                                 start += self.push_def(&line[start..]);
                                 c = start - 1;
-                                req += 4;
+                                req = indentation + 4;
                                 indentation = 0;
                             }
                             // Declare immutable variable.
                             b"let" => {
-                                if indentation != req {
+                                if indentation != req && self.open == Keyword::None  {
                                     eprintln!("Wrong indentation");
                                     std::process::exit(1);
                                 }
                                 println!("let");
                                 start = c + 1;
+                                self.open = Keyword::Let;
                                 start += self.push_let(&line[start..]);
                                 c = start - 1;
-                                req += 4;
-                                self.open = Keyword::Let;
+                                req = indentation + 4;
                                 indentation = 0;
                             }
                             // Declare mutable variable.
                             b"var" => {
+                                
                             }
                             // Set function output & return.
                             b"out" => {
+                                if indentation != req && self.open == Keyword::None {
+                                    eprintln!("Wrong indentation");
+//                                    std::process::exit(1);
+                                }
+                                println!("out");
+                                start = c + 1;
+                                self.open = Keyword::Out;
+                                start += self.push_let(&line[start..]);
+                                c = start - 1;
+                                req = indentation + 4;
+                                indentation = 0;
                             }
                             a => {
                                 let a = unsafe { std::str::from_utf8_unchecked(a) };
@@ -278,13 +353,11 @@ impl Code {
                                     std::process::exit(1);
                                 }
 
-                                if self.open == Keyword::Let {
+                                if self.open == Keyword::Let || self.open == Keyword::Out {
                                     start += self.push_let(&line[start..]);
                                     c = start - 1;
                                     indentation = 0;
                                 }
-
-                                println!("HELLO WORKD");
                             }
                         }
                     }
