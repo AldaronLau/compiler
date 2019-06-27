@@ -177,11 +177,43 @@ mod shader {
     }
 }
 
-/// Turn Yeet code into portable shader code.
+/// Turn Yeet code into portable shader code (Yote bytecode).
 pub fn compile_shader(yeet_code: &str) -> Vec<u8> {
     let mut code = Code::new();
     code.parse(yeet_code.as_bytes());
     shader::shader(code.to_ops())
+}
+
+/// Convert Yote bytecode to GLSL shaders.
+pub fn yote_to_rs(yote_bytecode: Vec<u8>) -> String {
+    // Convert a number to text.
+    fn num_to_text(l: u8) -> [u8; 2] {
+        if l >= 128 {
+            panic!("Number too high");
+        }
+
+        let a = (l >> 4) + b'a';
+        let b = (l << 4) + b'a';
+
+        [a, b]
+    }
+
+    let mut output = String::new();
+
+    output.push_str("(\"uniform mat4 rotation;\n\
+        attribute vec4 pos;\n\
+        attribute vec4 color;\n\
+        varying vec4 v_color;\n\
+        void main() {\n\
+            gl_Position = rotation * pos;\n\
+            v_color = color;\n\
+        }\\0\",\"precision mediump float;\n\
+        varying vec4 v_color;\n\
+        void main() {\n\
+            gl_FragColor = v_color;\n\
+        }\\0\")");
+
+    output
 }
 
 /// Compiled code.
