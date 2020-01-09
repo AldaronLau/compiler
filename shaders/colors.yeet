@@ -1,8 +1,0 @@
-# A simple shader that colors each vertex.
-
-let coord: $Vec3        # vertex coordinate (like GLSL attribute vec3)
-    color: $Vec4        # vertex color (like GLSL attribute vec4)
-    view : $View        # view matrix (like GLSL uniform mat4)
-
-out coord: view coord   # output position (GLSL vec3)
-    color: color        # output color (GLSL vec4)
