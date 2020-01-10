@@ -1,6 +1,6 @@
 [package]
 name = "yeet"
-version = "0.0.0"
+version = "0.1.0"
 authors = ["Jeron Aldaron Lau <jeronaldaron@gmail.com>"]
 edition = "2018"
 
@@ -10,10 +10,17 @@ homepage = "https://yeet-lang.github.io/"
 repository = "https://github.com/yeet-lang/yeet"
 readme = "README.md"
 keywords = ["yeet", "compiler", "interpreter"]
-categories = ["command-line-utilities", "development-tools::build-utils", "graphics"]
+categories = ["command-line-utilities"]
 
 [[bin]]
 name = "yeet"
 path = "src/yeet/main.rs"
 
 [dependencies]
+
+[features]
+default = ["rust", "python", "c", "aratar"]
+rust = []
+python = []
+c = []
+aratar = []
