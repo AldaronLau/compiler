@@ -12,6 +12,6 @@ pub mod python;
 #[cfg(feature = "aratar")]
 pub mod aratar;
 
-mod base;
+mod lexeme;
 
-pub use base::*;
+pub use lexeme::*;
