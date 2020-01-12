@@ -76,28 +76,6 @@ impl<'a> std::fmt::Display for Lexeme<'a> {
     }
 }
 
-/// Add a text literal / remark / comment type.
-pub struct TextType<'a> {
-    /// Opening markings
-    /// - `//` (C, Rust)
-    /// - `/*` (C, Rust)
-    /// - `#` (Python, Aratar)
-    /// - `"` (C, Python, Rust, Aratar)
-    /// - `'` (C, Python, Rust)
-    pub open: &'a str,
-    /// Closing markings
-    /// - `*/` (C, Rust)
-    /// - `\n` (C, Rust)
-    /// - `#` (Aratar)
-    /// - `"` (C, Python, Rust, Aratar)
-    /// - `'` (C, Python, Rust)
-    pub close: &'a [&'a str],
-    /// Escape marking to escape close markings.
-    /// - `\` (C, Rust, Python)
-    /// - ``
-    pub escape: &'a str,
-}
-
 /// An iterator over lexemes in a file.
 pub struct LexemeIterator<'a, C> {
     text: &'a str,
