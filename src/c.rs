@@ -112,20 +112,22 @@ pub enum Type<'a> {
     Typedef(&'a str),
 }
 
-/// Formal parameter to a function.
-pub struct Parameter<'a> {
-    pub arg_type: Type<'a>,
+/// Variable definition.
+pub struct Variable<'a> {
+    pub ty: Type<'a>,
     pub name: &'a str,
 }
 
-/// A prototype for a function.  May be followed by a `{` or a `;`.
+/// A prototype for a function.  May have a block ('{') or a `;`.
 pub struct Prototype<'a> {
     // The first component of a prototype.
     pub return_type: Type<'a>,
     // Name of the function
     pub name: &'a str,
     // Formal parameters to the function
-    pub args: Vec<Parameter<'a>>,
+    pub params: Vec<Variable<'a>>,
+    // A code block to define what the function does.
+    pub block: Option<Block<'a>>,
 }
 
 enum CChunk {
@@ -280,6 +282,135 @@ pub enum Token<'a> {
     Int(i128),
     Operator(Operator),
     Bracket(Bracket),
+}
+
+pub enum Item<'a> {
+    Prototype(Prototype<'a>),
+    Block(Block<'a>),
+}
+
+pub struct ItemIterator<'a> {
+    tokens: TokenIterator<'a>,
+}
+
+impl<'a> ItemIterator<'a> {
+    pub fn new(text: &'a str) -> Self {
+        ItemIterator {
+            tokens: TokenIterator::new(text),
+        }
+    }
+}
+
+impl<'a> Iterator for ItemIterator<'a> {
+    type Item = Result<Item<'a>, ()>;
+
+    #[allow(unused)] // FIXME
+    fn next(&mut self) -> Option<Self::Item> {
+        let mut ty = None;
+//        let var_definition = None;
+//        let prototype_definition = None;
+
+        match self.tokens.next()? {
+            Token::Keyword(keyword) => match keyword {
+                Keyword::Auto => todo!(),
+                Keyword::Double => {
+                    ty = Some(Type::BuiltIn(BuiltInType::Double));
+                    let name = if let Some(token) = self.tokens.next() {
+                        match token {
+                            Token::Identifier(ident) => {
+                                ident
+                            }
+                            _ => return Some(Err(()))
+                        }
+                    } else {
+                        return Some(Err(()));
+                    };
+                    if let Some(token) = self.tokens.next() {
+                        match token {
+                            Token::Bracket(Bracket::ParensL) => { /* open */ }
+                            _ => return Some(Err(()))
+                        }
+                    } else {
+                        return Some(Err(()));
+                    };
+                },
+                Keyword::Int => {
+                },
+                Keyword::Struct => {
+                },
+                Keyword::Break => {
+                },
+                Keyword::Else => {
+                },
+                Keyword::Long => {
+                },
+                Keyword::Switch => {
+                },
+                Keyword::Case => {
+                },
+                Keyword::Enum => {
+                },
+                Keyword::Register => {
+                },
+                Keyword::Typedef => {
+                },
+                Keyword::Char => {
+                },
+                Keyword::Extern => {
+                },
+                Keyword::Return => {
+                },
+                Keyword::Union => {
+                },
+                Keyword::Const => {
+                },
+                Keyword::Float => {
+                },
+                Keyword::Short => {
+                },
+                Keyword::Unsigned => {
+                },
+                Keyword::Continue => {
+                },
+                Keyword::For => {
+                },
+                Keyword::Signed => {
+                },
+                Keyword::Void => {
+                },
+                Keyword::Default => {
+                },
+                Keyword::Goto => {
+                },
+                Keyword::Sizeof => {
+                },
+                Keyword::Volatile => {
+                },
+                Keyword::Do => {
+                },
+                Keyword::If => {
+                },
+                Keyword::Static => {
+                },
+                Keyword::While => {
+                },
+            },
+            Token::MultiLineComment(comment) => {},
+            Token::SingleLineComment(comment) => {},
+            Token::Character(ch) => {},
+            Token::String(text) => {},
+            Token::Identifier(ident) => {},
+            Token::Float(int, mantissa) => {},
+            Token::Int(int) => {},
+            Token::Operator(op) => {},
+            Token::Bracket(br) => {},
+        };
+        todo!() // FIXME
+    }
+}
+
+pub struct Block<'a> {
+    items: Vec<Item<'a>>,
 }
 
 fn begin_text(input: &str) -> (Option<CChunk>, Option<char>) {
